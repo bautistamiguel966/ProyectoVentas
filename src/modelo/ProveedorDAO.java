@@ -59,6 +59,7 @@ public class ProveedorDAO {
         return Listapr;
     }
     
+
     public boolean EliminarProveedor(int id){
 //        String sql = "DELETE FROM proveedores WHERE id = ? ";
         String sql = "UPDATE proveedores SET estado=false WHERE id=?";
