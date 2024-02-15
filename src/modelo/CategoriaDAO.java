@@ -1,5 +1,5 @@
 
-package vista;
+package modelo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import modelo.Conexion;
 import modelo.Proveedor;
 
 
-class CategoriaDAO {
+public class CategoriaDAO {
     Connection con;
     Conexion cn = new Conexion();
     PreparedStatement ps;
@@ -60,7 +60,7 @@ class CategoriaDAO {
     }
     
     
-        public void consultarCategoria(JComboBox categoria){
+    public void consultarCategoria(JComboBox categoria){
         String sql = "SELECT nombre FROM categorias WHERE estado = true";
         try {
             con = cn.getConnection();

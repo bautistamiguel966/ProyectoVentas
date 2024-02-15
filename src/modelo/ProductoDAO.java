@@ -123,6 +123,7 @@ public class ProductoDAO {
         }
         return producto;
     }
+    
     public Producto BuscarId(int id){
         Producto pro = new Producto();
 //        String sql = "SELECT pr.id AS id_proveedor, pr.nombre AS nombre_proveedor, p.* FROM proveedor pr INNER JOIN productos p ON p.proveedor = pr.id WHERE p.id = ?";
