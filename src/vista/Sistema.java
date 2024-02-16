@@ -2,6 +2,8 @@ package vista;
 
 
 import java.awt.event.KeyEvent;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import modelo.CategoriaDAO;
 import java.util.List;
@@ -9,11 +11,15 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
 import modelo.Combo;
+import modelo.ConfigDAO;
+import modelo.DetalleVenta;
 import modelo.LoginModelo;
 import modelo.Producto;
 import modelo.ProductoDAO;
 import modelo.Proveedor;
 import modelo.ProveedorDAO;
+import modelo.Venta;
+import modelo.VentaDAO;
 import reporte.Excel;
 
 
@@ -25,6 +31,10 @@ public class Sistema extends javax.swing.JFrame {
     CategoriaDAO catDao = new CategoriaDAO();
     Producto pro = new Producto();
     ProductoDAO proDao = new ProductoDAO();
+    Venta v = new Venta();
+    VentaDAO Vdao = new VentaDAO();
+    DetalleVenta Dv = new DetalleVenta();
+    ConfigDAO conDao = new ConfigDAO();
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultTableModel tmp = new DefaultTableModel();
     int item;
@@ -36,6 +46,10 @@ public class Sistema extends javax.swing.JFrame {
     public Sistema() {
         initComponents();
         catDao.consultarCategoria(cbxCategoriaProducto);
+        txtIdVenta.setVisible(false);
+        txtIdPro.setVisible(false);
+        txtIdProducto.setVisible(false);
+        txtIdProveedor.setVisible(false);
     }
 
     public void ListarProveedor() {
@@ -242,6 +256,11 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
+        txtCantidadVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCantidadVentaActionPerformed(evt);
+            }
+        });
         txtCantidadVenta.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtCantidadVentaKeyPressed(evt);
@@ -255,19 +274,25 @@ public class Sistema extends javax.swing.JFrame {
 
             },
             new String [] {
-                "CODIGO", "DESCRIPCION", "CANTIDAD", "PRECIO", "TOTAL"
+                "ID", "CODIGO", "DESCRIPCION", "CANTIDAD", "PRECIO", "TOTAL"
             }
         ));
         jScrollPane1.setViewportView(tableVenta);
         if (tableVenta.getColumnModel().getColumnCount() > 0) {
-            tableVenta.getColumnModel().getColumn(0).setPreferredWidth(30);
-            tableVenta.getColumnModel().getColumn(1).setPreferredWidth(100);
-            tableVenta.getColumnModel().getColumn(2).setPreferredWidth(30);
+            tableVenta.getColumnModel().getColumn(0).setPreferredWidth(20);
+            tableVenta.getColumnModel().getColumn(1).setPreferredWidth(30);
+            tableVenta.getColumnModel().getColumn(2).setPreferredWidth(100);
             tableVenta.getColumnModel().getColumn(3).setPreferredWidth(30);
-            tableVenta.getColumnModel().getColumn(4).setPreferredWidth(40);
+            tableVenta.getColumnModel().getColumn(4).setPreferredWidth(30);
+            tableVenta.getColumnModel().getColumn(5).setPreferredWidth(40);
         }
 
         btnGenerarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/print.png"))); // NOI18N
+        btnGenerarVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarVentaActionPerformed(evt);
+            }
+        });
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/money.png"))); // NOI18N
         jLabel9.setText("Total a Pagar:");
@@ -797,7 +822,7 @@ public class Sistema extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaVentaActionPerformed
-        // TODO add your handling code here:
+        jTabbedPane1.setSelectedIndex(0);
     }//GEN-LAST:event_btnNuevaVentaActionPerformed
 
     private void btnProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProveedorActionPerformed
@@ -914,7 +939,7 @@ public class Sistema extends javax.swing.JFrame {
             ListarProductos();
             LimpiarProductos();
             cbxCategoriaProducto.removeAllItems();
-//            llenarCategorias();
+            llenarCategorias();
             btnEditarProducto.setEnabled(false);
             btnEliminarProducto.setEnabled(false);
             btnGuardarProducto.setEnabled(true);
@@ -1033,17 +1058,19 @@ public class Sistema extends javax.swing.JFrame {
                     }
                     ArrayList lista = new ArrayList();
                     lista.add(item);
+                    lista.add(id);
                     lista.add(codigo);
                     lista.add(nombre);
                     lista.add(cant);
                     lista.add(precio);
                     lista.add(total);
-                    Object[] O = new Object[5];
+                    Object[] O = new Object[6];
                     O[0] = lista.get(1);
                     O[1] = lista.get(2);
                     O[2] = lista.get(3);
                     O[3] = lista.get(4);
                     O[4] = lista.get(5);
+                    O[5] = lista.get(6);
                     tmp.addRow(O);
                     tableVenta.setModel(tmp);
                     TotalPagar();
@@ -1064,6 +1091,17 @@ public class Sistema extends javax.swing.JFrame {
         TotalPagar();
         txtCodigoVenta.requestFocus();
     }//GEN-LAST:event_btnEliminarVentaActionPerformed
+
+    private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
+        RegistrarVenta();
+        RegistrarDetalle();
+        ActualizarStock();
+        LimpiarTableVenta();
+    }//GEN-LAST:event_btnGenerarVentaActionPerformed
+
+    private void txtCantidadVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadVentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCantidadVentaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1233,9 +1271,60 @@ public class Sistema extends javax.swing.JFrame {
         Totalpagar = 0.00;
         int numFila = tableVenta.getRowCount();
         for (int i = 0; i < numFila; i++) {
-            double cal = Double.parseDouble(String.valueOf(tableVenta.getModel().getValueAt(i, 4)));
+            double cal = Double.parseDouble(String.valueOf(tableVenta.getModel().getValueAt(i, 5)));
             Totalpagar = Totalpagar + cal;
         }
         labelTotal.setText(String.format("%.2f", Totalpagar));
+    }
+    
+    private void RegistrarVenta() {
+        int usuario_id = conDao.BuscarUsuario();
+        double monto = Totalpagar;
+        v.setUsuarios_id(usuario_id);
+        v.setTotal(monto);
+        v.setFecha(LocalDate.now());
+        v.setHora(LocalTime.now());
+        v.setEstado(true);
+        Vdao.RegistrarVenta(v);
+    }
+    
+        private void RegistrarDetalle() {
+        int id = Vdao.IdVenta();
+//        int id = 1;
+        for (int i = 0; i < tableVenta.getRowCount(); i++) {
+            int id_pro = Integer.parseInt(tableVenta.getValueAt(i, 0).toString());
+            int cant = Integer.parseInt(tableVenta.getValueAt(i, 3).toString());
+            double precio = Double.parseDouble(tableVenta.getValueAt(i, 4).toString());
+            
+            System.out.println("ID VENTA: " + id + " ID PRODUCTO: " + id_pro + " CANTIDAD: " + cant + " PRECIO: " + precio);
+            
+            Dv.setProductos_id(id_pro);
+            Dv.setCantidad(cant);
+            Dv.setPrecio_unitario(precio);
+            Dv.setVentas_id(id);
+            Dv.setEstado(true);
+            Vdao.RegistrarDetalle(Dv);
+
+        }
+//        Vdao.pdfV(id, cliente, Totalpagar, LabelVendedor.getText());
+    }
+        
+    private void ActualizarStock() {
+        for (int i = 0; i < tableVenta.getRowCount(); i++) {
+            int id = Integer.parseInt(tableVenta.getValueAt(i, 0).toString());
+            int cant = Integer.parseInt(tableVenta.getValueAt(i, 3).toString());
+            pro = proDao.BuscarId(id);
+            int StockActual = pro.getStock() - cant;
+            Vdao.ActualizarStock(StockActual, id);
+
+        }
+    }
+    
+    private void LimpiarTableVenta() {
+        tmp = (DefaultTableModel) tableVenta.getModel();
+        int fila = tableVenta.getRowCount();
+        for (int i = 0; i < fila; i++) {
+            tmp.removeRow(0);
+        }
     }
 }
