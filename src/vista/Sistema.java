@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
 import modelo.Combo;
+import modelo.Config;
 import modelo.ConfigDAO;
 import modelo.DetalleVenta;
 import modelo.LoginModelo;
@@ -18,6 +19,7 @@ import modelo.Producto;
 import modelo.ProductoDAO;
 import modelo.Proveedor;
 import modelo.ProveedorDAO;
+import modelo.UsuarioDAO;
 import modelo.Venta;
 import modelo.VentaDAO;
 import reporte.Excel;
@@ -34,7 +36,9 @@ public class Sistema extends javax.swing.JFrame {
     Venta v = new Venta();
     VentaDAO Vdao = new VentaDAO();
     DetalleVenta Dv = new DetalleVenta();
+    Config conf = new Config();
     ConfigDAO conDao = new ConfigDAO();
+    UsuarioDAO usuDao = new UsuarioDAO();
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultTableModel tmp = new DefaultTableModel();
     int item;
@@ -50,6 +54,8 @@ public class Sistema extends javax.swing.JFrame {
         txtIdPro.setVisible(false);
         txtIdProducto.setVisible(false);
         txtIdProveedor.setVisible(false);
+        txtIdConfig.setVisible(false);
+        ListarConfig();
     }
 
     public void ListarProveedor() {
@@ -81,6 +87,15 @@ public class Sistema extends javax.swing.JFrame {
             modelo.addRow(ob);
         }
         tableProducto.setModel(modelo);
+
+    }
+    
+    public void ListarConfig() {
+        conf = proDao.BuscarDatos();
+        txtIdConfig.setText("" + conf.getId());
+        txtNombreConfig.setText("" + conf.getNombre_negocio());
+        txtTelefonoConfig.setText("" + conf.getTelefono());
+        txtDireccionConfig.setText("" + conf.getDireccion());
 
     }
 
@@ -157,18 +172,15 @@ public class Sistema extends javax.swing.JFrame {
         btnPdfVentas = new javax.swing.JButton();
         txtIdVenta = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
-        jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        txtRucConfig = new javax.swing.JTextField();
         txtNombreConfig = new javax.swing.JTextField();
         txtTelefonoConfig = new javax.swing.JTextField();
         txtDireccionConfig = new javax.swing.JTextField();
-        txtRazonConfig = new javax.swing.JTextField();
         btnActualizarConfig = new javax.swing.JButton();
         jLabel31 = new javax.swing.JLabel();
+        txtIdConfig = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -731,15 +743,11 @@ public class Sistema extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab4", jPanel6);
 
-        jLabel16.setText("RUC");
-
         jLabel17.setText("NOMBRE");
 
         jLabel18.setText("TELÉFONO");
 
         jLabel19.setText("DIRECCIÓN");
-
-        jLabel20.setText("RAZON SOCIAL");
 
         btnActualizarConfig.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Actualizar (2).png"))); // NOI18N
         btnActualizarConfig.setText("AZTUALIZAR");
@@ -757,59 +765,61 @@ public class Sistema extends javax.swing.JFrame {
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtRucConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel19)
-                    .addComponent(txtDireccionConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(109, 109, 109)
+                .addGap(73, 73, 73)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel17)
+                        .addComponent(txtIdConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnActualizarConfig)
-                            .addComponent(jLabel20))
-                        .addGap(446, 446, 446))
+                        .addComponent(jLabel31)
+                        .addGap(394, 394, 394))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtRazonConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addGap(227, 227, 227))
                             .addComponent(txtNombreConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(55, 55, 55)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel18)
-                            .addComponent(txtTelefonoConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel31)
-                .addGap(394, 394, 394))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnActualizarConfig)
+                                .addGap(446, 446, 446))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGap(45, 45, 45)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtTelefonoConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel18))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel19)
+                                    .addComponent(txtDireccionConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(63, 63, 63))))))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(56, 56, 56)
-                .addComponent(jLabel31)
-                .addGap(129, 129, 129)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel17)
-                    .addComponent(jLabel18))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtRucConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNombreConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtTelefonoConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(74, 74, 74)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel20))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDireccionConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtRazonConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel31)
+                                .addGap(129, 129, 129))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(txtIdConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(jLabel17)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtNombreConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel18)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtTelefonoConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel19)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtDireccionConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
                 .addComponent(btnActualizarConfig)
                 .addGap(65, 65, 65))
         );
@@ -1158,12 +1168,10 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JButton btnProveedor;
     private javax.swing.JButton btnVentas;
     private javax.swing.JComboBox<String> cbxCategoriaProducto;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -1200,6 +1208,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtCodigoVenta;
     private javax.swing.JTextField txtDireccionConfig;
     private javax.swing.JTextField txtDireccionProveedor;
+    private javax.swing.JTextField txtIdConfig;
     private javax.swing.JTextField txtIdPro;
     private javax.swing.JTextField txtIdProducto;
     private javax.swing.JTextField txtIdProveedor;
@@ -1210,8 +1219,6 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtNombreVenta;
     private javax.swing.JTextField txtPrecioProducto;
     private javax.swing.JTextField txtPrecioVenta;
-    private javax.swing.JTextField txtRazonConfig;
-    private javax.swing.JTextField txtRucConfig;
     private javax.swing.JTextField txtStockDisponible;
     private javax.swing.JTextField txtTelefonoConfig;
     private javax.swing.JTextField txtTelefonoProveedor;
@@ -1306,7 +1313,7 @@ public class Sistema extends javax.swing.JFrame {
             Vdao.RegistrarDetalle(Dv);
 
         }
-//        Vdao.pdfV(id, cliente, Totalpagar, LabelVendedor.getText());
+        Vdao.pdfV(id, Totalpagar, usuDao.BuscarNombreUsuario(conDao.BuscarUsuario()));
     }
         
     private void ActualizarStock() {

@@ -7,27 +7,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class ConfigDAO {
+public class UsuarioDAO {
     Connection con;
     Conexion cn = new Conexion();
     PreparedStatement ps;
     ResultSet rs;
     int r;
-    
-    public int BuscarUsuario(){
-        int id = 0;
-        String sql = "SELECT usuario_id FROM configuraciones LIMIT 1";
+
+    public String BuscarNombreUsuario(int usuario_id) {
+        String nombre = "";
+        String sql = "SELECT nombre, apellido FROM usuarios WHERE id = ?";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
+            ps.setInt(1, usuario_id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                id = rs.getInt(1);
+                nombre = (rs.getString("nombre")) + " " +(rs.getString("apellido"));
             }
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
-        return id;
+        return nombre;
     }
-    
 }
