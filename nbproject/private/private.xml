@@ -6,10 +6,9 @@
             <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/UsuarioDAO.java</file>
             <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/vista/Sistema.java</file>
             <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/ConfigDAO.java</file>
-            <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/Config.java</file>
-            <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/Producto.java</file>
-            <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/reporte/Excel.java</file>
-            <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/Venta.java</file>
+            <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/ProductoDAO.java</file>
+            <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/Evento.java</file>
+            <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/reporte/Grafico.java</file>
             <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/DetalleVenta.java</file>
             <file>file:/C:/Users/migue/Documents/NetBeansProjects/Ventas/src/modelo/VentaDAO.java</file>
         </group>

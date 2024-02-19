@@ -44,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import javax.swing.filechooser.FileSystemView;
@@ -133,7 +134,7 @@ public class VentaDAO {
         }
     }
     
-    public List Listarventas(){
+    public List ListarVentasPorUsuario(){
        List<Venta> ListaVenta = new ArrayList();
        String sql = "SELECT u.id AS id_usuario, u.nombre, v.* FROM usuarios u INNER JOIN ventas v ON u.id = v.usuarios_id";
        try {
@@ -152,6 +153,28 @@ public class VentaDAO {
        }
        return ListaVenta;
    }
+    public List ListarVentas(){
+       List<Venta> ListaVenta = new ArrayList();
+       String sql = "SELECT * FROM ventas";
+       try {
+           con = cn.getConnection();
+           ps = con.prepareStatement(sql);
+           rs = ps.executeQuery();
+           while (rs.next()) {               
+               Venta vent = new Venta();
+               vent.setId(rs.getInt("id"));
+               vent.setTotal(rs.getDouble("total"));
+               vent.setFecha(rs.getDate("fecha").toLocalDate());
+               vent.setHora(rs.getTime("hora").toLocalTime());
+               vent.setUsuarios_id(rs.getInt("usuarios_id"));
+               ListaVenta.add(vent);
+           }
+       } catch (SQLException e) {
+           System.out.println(e.toString());
+       }
+       return ListaVenta;
+   }
+        
     public Venta BuscarVenta(int id){
         Venta cl = new Venta();
         String sql = "SELECT * FROM ventas WHERE id = ?";

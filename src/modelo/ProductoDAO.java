@@ -168,25 +168,4 @@ public class ProductoDAO {
         return conf;
     }
     
-    public boolean ModificarDatos(Config conf){
-       String sql = "UPDATE config SET nombre_negocio=?, telefono=?, direccion=? WHERE id=?";
-       try {
-           ps = con.prepareStatement(sql);
-           ps.setString(1, conf.getNombre_negocio());
-           ps.setString(2, conf.getTelefono());
-           ps.setString(3, conf.getDireccion());
-           ps.setInt(4, conf.getId());
-           ps.execute();
-           return true;
-       } catch (SQLException e) {
-           System.out.println(e.toString());
-           return false;
-       }finally{
-           try {
-               con.close();
-           } catch (SQLException e) {
-               System.out.println(e.toString());
-           }
-       }
-   }
 }
