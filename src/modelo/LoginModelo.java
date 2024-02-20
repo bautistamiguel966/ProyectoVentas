@@ -9,19 +9,19 @@ public class LoginModelo {
     private String nombre;
     private String apellido;
     private String telefono;
-    private String correo;
+    private String nombre_usuario;
     private String password;
     private LocalDate fecha_creacion;
     private boolean estado;
     
     public LoginModelo(){}
     
-    public LoginModelo(int id, String nombre, String apellido, String telefono, String correo, String password){
+    public LoginModelo(int id, String nombre, String apellido, String telefono, String nombre_usuario, String password){
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
-        this.correo = correo;
+        this.nombre_usuario = nombre_usuario;
         this.password = password;
         this.fecha_creacion = LocalDate.now();
         this.estado = true;
@@ -59,13 +59,15 @@ public class LoginModelo {
         this.telefono = telefono;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getNombre_usuario() {
+        return nombre_usuario;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setNombre_usuario(String nombre_usuario) {
+        this.nombre_usuario = nombre_usuario;
     }
+
+    
 
     public String getPassword() {
         return password;
