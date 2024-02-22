@@ -103,4 +103,21 @@ public class ProveedorDAO {
             }
         }
     }
+    
+    public int BuscarProveedor(String nombre){
+        int proveedor_id = 0;
+        String sql = "SELECT * FROM proveedores WHERE nombre = ?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, nombre);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                proveedor_id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return proveedor_id;
+    }
 }

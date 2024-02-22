@@ -1,23 +1,6 @@
 
 package modelo;
 
-//import com.itextpdf.text.pdf.PdfWriter;
-//import java.awt.Font;
-//import java.awt.Image;
-//import java.io.File;
-//import java.io.FileOutputStream;
-//import java.sql.Connection;
-//import java.sql.Date;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.Time;
-//import java.util.ArrayList;
-//import java.util.List;
-//import javax.swing.filechooser.FileSystemView;
-//import javax.swing.text.Document;
-//import org.apache.poi.wp.usermodel.Paragraph;
-//import java.text.SimpleDateFormat;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -50,16 +33,16 @@ import java.util.List;
 import javax.swing.filechooser.FileSystemView;
 
 
-public class VentaDAO {
+public class CompraDAO {
     Connection con;
     Conexion cn = new Conexion();
     PreparedStatement ps;
     ResultSet rs;
     int r;
     
-    public int IdVenta(){
+    public int IdCompra(){
         int id = 0;
-        String sql = "SELECT MAX(id) FROM ventas";
+        String sql = "SELECT MAX(id) FROM compras";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -73,15 +56,39 @@ public class VentaDAO {
         return id;
     }
     
-    public int RegistrarVenta(Venta v){
-        String sql = "INSERT INTO ventas (usuarios_id, total, fecha, hora, estado) VALUES (?,?,?,?,?)";
+    public int RegistrarCompra(Compra c){
+        String sql = "INSERT INTO compras (usuarios_id, total, fecha, hora, estado, proveedores_id) VALUES (?,?,?,?,?,?)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
-            ps.setInt(1, v.getUsuarios_id());
-            ps.setDouble(2, v.getTotal());
-            ps.setDate(3, java.sql.Date.valueOf(v.getFecha()));
-            ps.setTime(4, Time.valueOf(v.getHora()));
+            ps.setInt(1, c.getUsuarios_id());
+            ps.setDouble(2, c.getTotal());
+            ps.setDate(3, java.sql.Date.valueOf(c.getFecha()));
+            ps.setTime(4, Time.valueOf(c.getHora()));
+            ps.setBoolean(5, true);
+            ps.setInt(6, c.getProveedores_id());
+            ps.execute();
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }finally{
+            try {
+                con.close();
+            } catch (SQLException e) {
+                System.out.println(e.toString());
+            }
+        }
+        return r;
+    }
+    
+    public int RegistrarDetalle(DetalleCompra Dc){
+       String sql = "INSERT INTO detalles_compra (productos_id, cantidad, precio_unitario, compras_id, estado) VALUES (?,?,?,?,?)";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, Dc.getProductos_id());
+            ps.setInt(2, Dc.getCantidad());
+            ps.setDouble(3, Dc.getPrecio_unitario());
+            ps.setInt(4, Dc.getCompras_id());
             ps.setBoolean(5, true);
             ps.execute();
         } catch (SQLException e) {
@@ -96,112 +103,77 @@ public class VentaDAO {
         return r;
     }
     
-    public int RegistrarDetalle(DetalleVenta Dv){
-       String sql = "INSERT INTO detalles_venta (productos_id, cantidad, precio_unitario, ventas_id, estado) VALUES (?,?,?,?,?)";
-        try {
-            con = cn.getConnection();
-            ps = con.prepareStatement(sql);
-            ps.setInt(1, Dv.getProductos_id());
-            ps.setInt(2, Dv.getCantidad());
-            ps.setDouble(3, Dv.getPrecio_unitario());
-            ps.setInt(4, Dv.getVentas_id());
-            ps.setBoolean(5, true);
-            ps.execute();
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-        }finally{
-            try {
-                con.close();
-            } catch (SQLException e) {
-                System.out.println(e.toString());
-            }
-        }
-        return r;
-    }
     
-//    public boolean ActualizarStock(int cant, int id){
-//        String sql = "UPDATE productos SET stock = ? WHERE id = ?";
-//        try {
-//            con = cn.getConnection();
-//            ps = con.prepareStatement(sql);
-//            ps.setInt(1,cant);
-//            ps.setInt(2, id);
-//            ps.execute();
-//            return true;
-//        } catch (SQLException e) {
-//            System.out.println(e.toString());
-//            return false;
-//        }
-//    }
-    
-    public List ListarVentasPorUsuario(){
-       List<Venta> ListaVenta = new ArrayList();
-       String sql = "SELECT u.id AS id_usuario, u.nombre, v.* FROM usuarios u INNER JOIN ventas v ON u.id = v.usuarios_id";
+    public List ListarComprasPorUsuario(){
+       List<Compra> ListaCompra = new ArrayList();
+       String sql = "SELECT u.id AS id_usuario, u.nombre, c.* FROM usuarios u INNER JOIN compras c ON u.id = c.usuarios_id";
        try {
            con = cn.getConnection();
            ps = con.prepareStatement(sql);
            rs = ps.executeQuery();
            while (rs.next()) {               
-               Venta vent = new Venta();
-               vent.setId(rs.getInt("id"));
-               vent.setNombre_usuario(rs.getString("nombre"));
-               vent.setTotal(rs.getDouble("total"));
-               ListaVenta.add(vent);
+               Compra compra = new Compra();
+               compra.setId(rs.getInt("id"));
+               compra.setNombre_usuario(rs.getString("nombre"));
+               compra.setTotal(rs.getDouble("total"));
+               ListaCompra.add(compra);
            }
        } catch (SQLException e) {
            System.out.println(e.toString());
        }
-       return ListaVenta;
+       return ListaCompra;
    }
-    public List ListarVentas(){
-       List<Venta> ListaVenta = new ArrayList();
-       String sql = "SELECT * FROM ventas";
+    public List ListarCompras(){
+       List<Compra> ListaCompra = new ArrayList();
+       String sql = "SELECT * FROM compras";
        try {
            con = cn.getConnection();
            ps = con.prepareStatement(sql);
            rs = ps.executeQuery();
            while (rs.next()) {               
-               Venta vent = new Venta();
-               vent.setId(rs.getInt("id"));
-               vent.setTotal(rs.getDouble("total"));
-               vent.setFecha(rs.getDate("fecha").toLocalDate());
-               vent.setHora(rs.getTime("hora").toLocalTime());
-               vent.setUsuarios_id(rs.getInt("usuarios_id"));
-               ListaVenta.add(vent);
+               Compra compra = new Compra();
+               compra.setId(rs.getInt("id"));
+               compra.setTotal(rs.getDouble("total"));
+               compra.setFecha(rs.getDate("fecha").toLocalDate());
+               compra.setHora(rs.getTime("hora").toLocalTime());
+               compra.setUsuarios_id(rs.getInt("usuarios_id"));
+               compra.setProveedores_id(rs.getInt("proveedores_id"));
+               ListaCompra.add(compra);
            }
        } catch (SQLException e) {
            System.out.println(e.toString());
        }
-       return ListaVenta;
+       return ListaCompra;
    }
         
-    public Venta BuscarVenta(int id){
-        Venta cl = new Venta();
-        String sql = "SELECT * FROM ventas WHERE id = ?";
+    public Compra BuscarCompra(int id){
+        Compra c = new Compra();
+        String sql = "SELECT * FROM compras WHERE id = ?";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                cl.setId(rs.getInt("id"));
-                cl.setTotal(rs.getDouble("total"));
-                cl.setUsuarios_id(rs.getInt("usuarios_id"));
-                cl.setFecha(rs.getDate("fecha").toLocalDate());
-                cl.setHora(rs.getTime("hora").toLocalTime());
+                c.setId(rs.getInt("id"));
+                c.setTotal(rs.getDouble("total"));
+                c.setUsuarios_id(rs.getInt("usuarios_id"));
+                c.setFecha(rs.getDate("fecha").toLocalDate());
+                c.setHora(rs.getTime("hora").toLocalTime());
+                c.setProveedores_id(rs.getInt("proveedores_id"));
 
             }
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
-        return cl;
+        return c;
     }
-    public void pdfV(int idventa, double total, String usuario) {
+    public void pdfC(int idcompra, double total, String usuario) {
         try {
             java.util.Date date = new java.util.Date();
             FileOutputStream archivo;
             String url = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
-            File salida = new File(url + "venta.pdf");
+            File salida = new File(url + "compra.pdf");
             archivo = new FileOutputStream(salida);
             Document doc = new Document();
             PdfWriter.getInstance(doc, archivo);
@@ -211,7 +183,7 @@ public class VentaDAO {
             Paragraph fecha = new Paragraph();
             Font negrita = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLUE);
             fecha.add(Chunk.NEWLINE);
-            fecha.add("Vendedor: " + usuario + "\nFolio: " + idventa + "\nFecha: "
+            fecha.add("Vendedor: " + usuario + "\nFolio: " + idcompra + "\nFecha: "
                     + new SimpleDateFormat("dd/MM/yyyy").format(date) + "\nHora: " + LocalTime.now() + "\n\n");
             PdfPTable Encabezado = new PdfPTable(4);
             Encabezado.setWidthPercentage(100);
@@ -259,10 +231,10 @@ public class VentaDAO {
             tabla.addCell(c2);
             tabla.addCell(c3);
             tabla.addCell(c4);
-            String product = "SELECT d.id, d.productos_id, d.ventas_id, d.precio_unitario, d.cantidad, p.id, p.nombre FROM detalles_venta d INNER JOIN productos p ON d.productos_id = p.id WHERE d.ventas_id = ?";
+            String product = "SELECT d.id, d.productos_id, d.compras_id, d.precio_unitario, d.cantidad, p.id, p.nombre FROM detalles_compra d INNER JOIN productos p ON d.productos_id = p.id WHERE d.compras_id = ?";
             try {
                 ps = con.prepareStatement(product);
-                ps.setInt(1, idventa);
+                ps.setInt(1, idcompra);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     double subTotal = rs.getInt("cantidad") * rs.getDouble("precio_unitario");
@@ -300,3 +272,4 @@ public class VentaDAO {
         }
     }
 }
+

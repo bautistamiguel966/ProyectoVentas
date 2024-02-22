@@ -168,4 +168,19 @@ public class ProductoDAO {
         return conf;
     }
     
+        public boolean ActualizarStock(int cant, int id){
+        String sql = "UPDATE productos SET stock = ? WHERE id = ?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1,cant);
+            ps.setInt(2, id);
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+            return false;
+        }
+    }
+    
 }

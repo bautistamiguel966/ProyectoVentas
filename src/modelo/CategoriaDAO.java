@@ -116,7 +116,7 @@ public class CategoriaDAO {
         }
     }
     
-        public Categoria BuscarCategoria(String nombre){
+    public Categoria BuscarCategoria(String nombre){
         Categoria cat = new Categoria();
         String sql = "SELECT * FROM categorias WHERE nombre = ?";
         try {
