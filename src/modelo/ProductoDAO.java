@@ -124,6 +124,32 @@ public class ProductoDAO {
         return producto;
     }
     
+    public boolean existeProducto(String cod) {
+        String sql = "SELECT COUNT(*) FROM productos WHERE codigo = ?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, cod);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0; // Si count es mayor que 0, significa que el producto existe
+            }
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.toString());
+            }
+        }
+        return false;
+    }
+
+    
     public Producto BuscarId(int id){
         Producto pro = new Producto();
 //        String sql = "SELECT pr.id AS id_proveedor, pr.nombre AS nombre_proveedor, p.* FROM proveedor pr INNER JOIN productos p ON p.proveedor = pr.id WHERE p.id = ?";

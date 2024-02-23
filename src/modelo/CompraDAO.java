@@ -173,7 +173,7 @@ public class CompraDAO {
             java.util.Date date = new java.util.Date();
             FileOutputStream archivo;
             String url = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
-            File salida = new File(url + "compra.pdf");
+            File salida = new File(url + "-compra-Nº" + idcompra + ".pdf");
             archivo = new FileOutputStream(salida);
             Document doc = new Document();
             PdfWriter.getInstance(doc, archivo);
@@ -183,7 +183,7 @@ public class CompraDAO {
             Paragraph fecha = new Paragraph();
             Font negrita = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLUE);
             fecha.add(Chunk.NEWLINE);
-            fecha.add("Vendedor: " + usuario + "\nFolio: " + idcompra + "\nFecha: "
+            fecha.add("Comprador: " + usuario + "\nFolio: " + idcompra + "\nFecha: "
                     + new SimpleDateFormat("dd/MM/yyyy").format(date) + "\nHora: " + LocalTime.now() + "\n\n");
             PdfPTable Encabezado = new PdfPTable(4);
             Encabezado.setWidthPercentage(100);
